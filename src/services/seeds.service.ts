@@ -16,7 +16,5 @@ export class SeedsService {
     })
 
     await this.entityManager.save(newUser)
-
-    console.log('hello world');
   }
 }
