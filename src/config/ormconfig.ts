@@ -28,14 +28,14 @@ function buildConnectionOptions(filePath: string, env: string | undefined): Type
       };
 
   const entitiesDir =
-    process.env.NODE_ENV === 'test' ? [__dirname + '/**/*.entity.ts'] : [__dirname + '/**/*.entity{.js,.ts}'];
+    process.env.NODE_ENV === 'test' ? [__dirname + '/../**/*.entity.{js,ts}'] : [__dirname + '/../**/*.entity.{js,ts}'];
 
   return {
     type: 'postgres',
     ...connectionParams,
     entities: entitiesDir,
     synchronize: false,
-    migrations: [__dirname + '/migrations/**/*{.ts,.js}'],
+    migrations: [__dirname + '/../migrations/**/*{.ts,.js}'],
     cli: {
       migrationsDir: 'migrations'
     }
