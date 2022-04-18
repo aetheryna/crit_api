@@ -34,7 +34,7 @@ function buildConnectionOptions(filePath: string, env: string | undefined): Type
     type: 'postgres',
     ...connectionParams,
     entities: entitiesDir,
-    synchronize: false,
+    synchronize: true,
     migrations: [__dirname + '/../migrations/**/*{.ts,.js}'],
     cli: {
       migrationsDir: 'migrations'

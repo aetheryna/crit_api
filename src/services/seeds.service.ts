@@ -14,5 +14,9 @@ export class SeedsService {
       password: 'password',
       email: 'developer@nestjs.react',
     })
+
+    await this.entityManager.save(newUser)
+
+    console.log('hello world');
   }
 }
