@@ -6,7 +6,7 @@ import { User } from '../entities/user.entity'
 export class SeedsService {
   constructor (private readonly entityManager: EntityManager) {}
 
-  async perform() :Promise<void> {
+  async perform(): Promise<void> {
     const newUser = this.entityManager.create(User, {
       firstName: 'The',
       lastName: 'Developer',
