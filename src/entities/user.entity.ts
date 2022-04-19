@@ -1,4 +1,10 @@
-import { Entity, Column, PrimaryGeneratedColumn, CreateDateColumn, UpdateDateColumn } from 'typeorm'
+import {
+  Entity,
+  Column,
+  PrimaryGeneratedColumn,
+  CreateDateColumn,
+  UpdateDateColumn,
+} from 'typeorm';
 
 @Entity()
 export class User {
@@ -20,9 +26,9 @@ export class User {
   @Column()
   password: string;
 
-  @CreateDateColumn({default: () => 'now()', name: 'created_at'})
+  @CreateDateColumn({ default: () => 'now()', name: 'created_at' })
   createdAt: Date;
 
-  @UpdateDateColumn({default: () => 'now()', name: 'updated_at'})
+  @UpdateDateColumn({ default: () => 'now()', name: 'updated_at' })
   updatedAt: Date;
 }

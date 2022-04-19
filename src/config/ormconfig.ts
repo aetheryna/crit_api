@@ -3,7 +3,10 @@ import * as path from 'path';
 import * as dotenv from 'dotenv';
 import * as fs from 'fs';
 
-function buildConnectionOptions(filePath: string, env: string | undefined): TypeOrmModuleOptions {
+function buildConnectionOptions(
+  filePath: string,
+  env: string | undefined,
+): TypeOrmModuleOptions {
   let data: any = process.env;
 
   if (fs.existsSync(filePath)) {
@@ -28,7 +31,9 @@ function buildConnectionOptions(filePath: string, env: string | undefined): Type
       };
 
   const entitiesDir =
-    process.env.NODE_ENV === 'test' ? [__dirname + '/../**/*.entity.{js,ts}'] : [__dirname + '/../**/*.entity.{js,ts}'];
+    process.env.NODE_ENV === 'test'
+      ? [__dirname + '/../**/*.entity.{js,ts}']
+      : [__dirname + '/../**/*.entity.{js,ts}'];
 
   return {
     type: 'postgres',
@@ -37,8 +42,8 @@ function buildConnectionOptions(filePath: string, env: string | undefined): Type
     synchronize: true,
     migrations: [__dirname + '/../migrations/**/*{.ts,.js}'],
     cli: {
-      migrationsDir: 'migrations'
-    }
+      migrationsDir: 'migrations',
+    },
   };
 }
 
@@ -54,7 +59,7 @@ function throwErrorIfFileNotPresent(filePath: string, env: string): void {
   if (!fs.existsSync(filePath)) {
     console.log(
       `Unable to fetch database config from env file for environment: ${env}\n` +
-        'Picking up config from the environment'
+        'Picking up config from the environment',
     );
   }
 }

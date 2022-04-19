@@ -1,27 +1,26 @@
 import { Module } from '@nestjs/common';
-import { TypeOrmModule } from '@nestjs/typeorm'
-import { ConfigModule } from '@nestjs/config'
+import { TypeOrmModule } from '@nestjs/typeorm';
+import { ConfigModule } from '@nestjs/config';
 import { Connection } from 'typeorm';
 
 import ormconfig from './config/ormconfig';
 import { HelloWorldController } from './controllers/hello-world.controller';
 
-import { SeedsModule } from './modules/seeds/seeds.module'
+import { SeedsModule } from './modules/seeds/seeds.module';
 
 import { SeedsService } from '@services/seeds.service';
 
 @Module({
   imports: [
     ConfigModule.forRoot({
-      envFilePath: [`../.env.${process.env.NODE_ENV}`,'../env']
+      envFilePath: [`../.env.${process.env.NODE_ENV}`, '../env'],
     }),
     TypeOrmModule.forRoot(ormconfig),
-    SeedsModule
+    SeedsModule,
   ],
   controllers: [HelloWorldController],
   providers: [SeedsService],
 })
-
 export class AppModule {
   constructor(private connection: Connection) {}
 
