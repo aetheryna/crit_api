@@ -3,14 +3,15 @@ import * as path from 'path';
 import * as dotenv from 'dotenv';
 import * as fs from 'fs';
 
-function buildConnectionOptions(filePath: string, env: string | undefined): TypeOrmModuleOptions {
+function buildConnectionOptions(
+  filePath: string,
+  env: string | undefined,
+): TypeOrmModuleOptions {
   let data: any = process.env;
 
   if (fs.existsSync(filePath)) {
     data = { ...data, ...dotenv.parse(fs.readFileSync(filePath)) };
   }
-
-  /* use the database connection URL if available ( Heroku postgres addon uses connection URL ) */
 
   const connectionParams = process.env.DATABASE_URL
     ? {
@@ -30,14 +31,19 @@ function buildConnectionOptions(filePath: string, env: string | undefined): Type
       };
 
   const entitiesDir =
-    process.env.NODE_ENV === 'test' ? [__dirname + '/**/*.entity.ts'] : [__dirname + '/**/*.entity{.js,.ts}'];
+    process.env.NODE_ENV === 'test'
+      ? [__dirname + '/../**/*.entity.{js,ts}']
+      : [__dirname + '/../**/*.entity.{js,ts}'];
 
   return {
     type: 'postgres',
     ...connectionParams,
     entities: entitiesDir,
-    synchronize: false,
-    migrations: [__dirname + '/migrations/**/*{.ts,.js}'],
+    synchronize: true,
+    migrations: [__dirname + '/../migrations/**/*{.ts,.js}'],
+    cli: {
+      migrationsDir: 'migrations',
+    },
   };
 }
 
@@ -53,7 +59,7 @@ function throwErrorIfFileNotPresent(filePath: string, env: string): void {
   if (!fs.existsSync(filePath)) {
     console.log(
       `Unable to fetch database config from env file for environment: ${env}\n` +
-        'Picking up config from the environment'
+        'Picking up config from the environment',
     );
   }
 }
