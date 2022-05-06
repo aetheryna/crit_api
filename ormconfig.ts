@@ -32,17 +32,17 @@ function buildConnectionOptions(
 
   const entitiesDir =
     process.env.NODE_ENV === 'test'
-      ? [__dirname + '/../**/*.entity.{js,ts}']
-      : [__dirname + '/../**/*.entity.{js,ts}'];
+      ? [__dirname + '/**/*.entity.{js,ts}']
+      : [__dirname + '/**/*.entity.{js,ts}'];
 
   return {
     type: 'postgres',
     ...connectionParams,
     entities: entitiesDir,
     synchronize: true,
-    migrations: [__dirname + '/../migrations/**/*{.ts,.js}'],
+    migrations: [__dirname + '/src/db/migrations/**/*{.ts,.js}'],
     cli: {
-      migrationsDir: 'migrations',
+      migrationsDir: 'src/db/migrations',
     },
   };
 }

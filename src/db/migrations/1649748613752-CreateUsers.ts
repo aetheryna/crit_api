@@ -14,6 +14,11 @@ export class CreateUsers1649748613752 implements MigrationInterface {
             isPrimary: true,
           },
           {
+            name: 'userName',
+            type: 'varchar',
+            isNullable: false,
+          },
+          {
             name: 'firstName',
             type: 'varchar',
             isNullable: false,
@@ -27,6 +32,11 @@ export class CreateUsers1649748613752 implements MigrationInterface {
             name: 'email',
             type: 'varchar',
             isUnique: true,
+            isNullable: false,
+          },
+          {
+            name: 'password',
+            type: 'varchar',
             isNullable: false,
           },
           {
