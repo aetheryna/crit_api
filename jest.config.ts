@@ -3,6 +3,7 @@ module.exports = async () => {
     verbose: true,
     moduleFileExtensions: ['js', 'json', 'ts'],
     rootDir: '.',
+    testTimeout: 15000,
     testEnvironment: 'node',
     testRegex: '.spec.ts$',
     testPathIgnorePatterns: ['.e2e-spec.ts$'],

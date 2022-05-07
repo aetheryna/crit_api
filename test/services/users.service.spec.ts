@@ -14,8 +14,6 @@ describe('Users Service', () => {
   })
 
   beforeAll(async () => {
-    jest.setTimeout(10000);
-
     nestApp = await createNestAppInstance();
     service = nestApp.get<UsersService>(UsersService);
   })

@@ -13,8 +13,6 @@ describe('Users Controller', () => {
   });
 
   beforeAll(async () => {
-    jest.setTimeout(10000);
-
     ({ app, mockConfig } = await createNestAppInstanceWithENVMock());
   });
 
