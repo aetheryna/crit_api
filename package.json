@@ -24,6 +24,7 @@
     "db:seed": "ts-node -r tsconfig-paths/register --transpile-only ./scripts/seeds.ts"
   },
   "dependencies": {
+    "@golevelup/ts-jest": "^0.3.3",
     "@nestjs/common": "^8.0.0",
     "@nestjs/config": "^2.0.0",
     "@nestjs/core": "^8.0.0",
