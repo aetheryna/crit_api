@@ -19,8 +19,8 @@ export class UsersController {
     }).catch(error => {
       if (error.code === '23505' && error.constraint === 'UQ_user_email')
         throw new HttpException('Email is already in use, please try another email', HttpStatus.UNPROCESSABLE_ENTITY)
-    }).then(() => {
-      return 'User created';
     })
+
+    return 'User created';
   }
 }
