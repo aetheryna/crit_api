@@ -55,7 +55,7 @@ describe('Users Controller', () => {
       ])
     })
 
-    it ('should return a 422 error when fields are similar to DB', async () => {
+    it ('should return a 422 error when email is already taken', async () => {
       const firstSend = await request(app.getHttpServer())
         .post('/api/users/register-user')
         .send(userData)
