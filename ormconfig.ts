@@ -30,10 +30,7 @@ function buildConnectionOptions(
         },
       };
 
-  const entitiesDir =
-    process.env.NODE_ENV === 'test'
-      ? [__dirname + '/**/*.entity.{js,ts}']
-      : [__dirname + '/**/*.entity.{js,ts}'];
+  const entitiesDir = [__dirname + '/**/*.entity.{js,ts}'];
 
   return {
     type: 'postgres',
