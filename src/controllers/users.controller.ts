@@ -10,7 +10,7 @@ export class UsersController {
   async registerUser(@Body() registerNewUser: RegisterNewUser) {
     const { username, firstname, lastname, password, email } = registerNewUser
 
-    const createUser = await this.usersService.registerUser({
+    await this.usersService.registerUser({
       userName: username,
       firstName: firstname,
       lastName: lastname,
@@ -18,7 +18,7 @@ export class UsersController {
       email: email,
     }).catch(error => {
       if (error.code === '23505' && error.constraint === 'UQ_user_email')
-        throw new HttpException('Email is already in use, please try another email', HttpStatus.UNPROCESSABLE_ENTITY)
+        throw new HttpException('Email is already in use, please try another email', HttpStatus.BAD_REQUEST)
     })
 
     return 'User created';

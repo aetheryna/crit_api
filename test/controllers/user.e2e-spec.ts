@@ -55,7 +55,7 @@ describe('Users Controller', () => {
       ])
     })
 
-    it ('should return a 422 error when email is already taken', async () => {
+    it ('should return a 400 error when email is already taken', async () => {
       const firstSend = await request(app.getHttpServer())
         .post('/api/users/register-user')
         .send(userData)
@@ -64,7 +64,7 @@ describe('Users Controller', () => {
         .post('/api/users/register-user')
         .send(userData)
 
-      expect(response.statusCode).toBe(422)
+      expect(response.statusCode).toBe(400)
       expect(response.body.message).toStrictEqual('Email is already in use, please try another email')
     })
   })
