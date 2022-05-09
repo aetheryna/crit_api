@@ -36,28 +36,35 @@ export async function createNestAppInstanceWithENVMock(): Promise<{
       {
         provide: ConfigService,
         useValue: createMock<ConfigService>(),
-      }
-    ]
-  }).compile()
+      },
+    ],
+  }).compile();
 
   app = moduleRef.createNestApplication();
   app.useGlobalFilters(new HttpExceptionFilter());
   app.useGlobalPipes(new ValidationPipe());
-  
+
   await app.init();
 
   return { app, mockConfig: moduleRef.get(ConfigService) };
-};
+}
 
 export async function clearDB() {
   const entities = getConnection().entityMetadatas;
   for (const entity of entities) {
     const repository = getConnection().getRepository(entity.name);
-    await repository.query(`TRUNCATE ${entity.tableName} RESTART IDENTITY CASCADE;`);
-  };
-};
+    await repository.query(
+      `TRUNCATE ${entity.tableName} RESTART IDENTITY CASCADE;`,
+    );
+  }
+}
 
-export async function createUser({username, email, firstname, lastname}: any) {
+export async function createUser({
+  username,
+  email,
+  firstname,
+  lastname,
+}: any) {
   let userRepository: Repository<Users>;
 
   const user = await userRepository.save(
@@ -69,8 +76,8 @@ export async function createUser({username, email, firstname, lastname}: any) {
       email: email || 'dev@crit.io',
       createdAt: new Date(),
       updatedAt: new Date(),
-    })
+    }),
   );
 
   return user;
-};
+}

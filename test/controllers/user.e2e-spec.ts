@@ -13,8 +13,8 @@ describe('Users Controller', () => {
     firstname: 'Test',
     lastname: 'User',
     email: 'testuser@crit.io',
-    password: 'password'
-  }
+    password: 'password',
+  };
 
   beforeEach(async () => {
     await clearDB();
@@ -24,52 +24,56 @@ describe('Users Controller', () => {
     ({ app, mockConfig } = await createNestAppInstanceWithENVMock());
   });
 
-  describe('POST /api/users/register-user', () => { 
-    it ('should register a new user', async () => {
+  describe('POST /api/users/register-user', () => {
+    it('should register a new user', async () => {
       const response = await request(app.getHttpServer())
         .post('/api/users/register-user')
         .send(userData);
 
-      expect(response.statusCode).toBe(201)
+      expect(response.statusCode).toBe(201);
 
-      const createdUser = await getManager().findOneOrFail(Users, { where: { email: userData.email }})
-      
-      expect(createdUser.email).toEqual('testuser@crit.io')
-    })
+      const createdUser = await getManager().findOneOrFail(Users, {
+        where: { email: userData.email },
+      });
 
-    it ('should return a 400 error when fields are empty', async () => {
-      const emptyData = {}
+      expect(createdUser.email).toEqual('testuser@crit.io');
+    });
+
+    it('should return a 400 error when fields are empty', async () => {
+      const emptyData = {};
 
       const response = await request(app.getHttpServer())
         .post('/api/users/register-user')
-        .send(emptyData)
+        .send(emptyData);
 
-      expect(response.statusCode).toBe(400)
+      expect(response.statusCode).toBe(400);
       expect(response.body.message.message).toStrictEqual([
-        "username must be a string",
-        "firstname must be a string",
-        "lastname must be a string",
-        "password must be longer than or equal to 8 characters",
-        "password must be a string",
-        "email must be an email"
-      ])
-    })
+        'username must be a string',
+        'firstname must be a string',
+        'lastname must be a string',
+        'password must be longer than or equal to 8 characters',
+        'password must be a string',
+        'email must be an email',
+      ]);
+    });
 
-    it ('should return a 400 error when email is already taken', async () => {
+    it('should return a 400 error when email is already taken', async () => {
       const firstSend = await request(app.getHttpServer())
         .post('/api/users/register-user')
-        .send(userData)
+        .send(userData);
 
       const response = await request(app.getHttpServer())
         .post('/api/users/register-user')
-        .send(userData)
+        .send(userData);
 
-      expect(response.statusCode).toBe(400)
-      expect(response.body.message).toStrictEqual('Email is already in use, please try another email')
-    })
-  })
+      expect(response.statusCode).toBe(400);
+      expect(response.body.message).toStrictEqual(
+        'Email is already in use, please try another email',
+      );
+    });
+  });
 
   afterAll(async () => {
     await app.close();
   });
-})
+});
