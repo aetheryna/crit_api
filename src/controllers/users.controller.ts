@@ -1,9 +1,37 @@
-import { Controller, Get } from '@nestjs/common';
+import {
+  Controller,
+  Post,
+  Body,
+  HttpException,
+  HttpStatus,
+} from '@nestjs/common';
+import { RegisterNewUser } from 'src/dto/registerNewUser.dto';
+import { UsersService } from 'src/services/users.service';
 
 @Controller('api/users')
 export class UsersController {
-  @Get()
-  helloWorld(): string {
-    return 'This is the users API';
+  constructor(private usersService: UsersService) {}
+
+  @Post('/register-user')
+  async registerUser(@Body() registerNewUser: RegisterNewUser) {
+    const { username, firstname, lastname, password, email } = registerNewUser;
+
+    await this.usersService
+      .registerUser({
+        userName: username,
+        firstName: firstname,
+        lastName: lastname,
+        password: password,
+        email: email,
+      })
+      .catch((error) => {
+        if (error.code === '23505' && error.constraint === 'UQ_user_email')
+          throw new HttpException(
+            'Email is already in use, please try another email',
+            HttpStatus.BAD_REQUEST,
+          );
+      });
+
+    return 'User created';
   }
 }
