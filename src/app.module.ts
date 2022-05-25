@@ -6,6 +6,7 @@ import { Connection } from 'typeorm';
 import ormconfig from '../ormconfig';
 
 import { SeedsModule } from './modules/seeds/seeds.module';
+import { AuthModule } from './modules/auth/auth.module';
 import { UsersModule } from './modules/users/users.module';
 
 import { SeedsService } from '@services/seeds.service';
@@ -16,6 +17,7 @@ const imports = [
   }),
   TypeOrmModule.forRoot(ormconfig),
   SeedsModule,
+  AuthModule,
   UsersModule,
 ];
 

@@ -24,4 +24,14 @@ export class UsersService {
 
     await this.entityManager.save(createNewUser);
   }
+
+  async findUser(loginParams: any): Promise<void> {
+    const { email } = loginParams;
+
+    const findUserByEmail: Users | any = await this.entityManager.findOneOrFail(Users, {
+      where: { email: email }
+    })
+
+    return findUserByEmail;
+  }
 }
