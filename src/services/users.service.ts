@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { EntityManager } from 'typeorm';
 import { Users } from '../entities/user.entity';
+// eslint-disable-next-line @typescript-eslint/no-var-requires
 const bcrypt = require('bcrypt');
 
 @Injectable()
@@ -28,9 +29,12 @@ export class UsersService {
   async findUser(loginParams: any): Promise<void> {
     const { email } = loginParams;
 
-    const findUserByEmail: Users | any = await this.entityManager.findOneOrFail(Users, {
-      where: { email: email }
-    })
+    const findUserByEmail: Users | any = await this.entityManager.findOneOrFail(
+      Users,
+      {
+        where: { email: email },
+      },
+    );
 
     return findUserByEmail;
   }

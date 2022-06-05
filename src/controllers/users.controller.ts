@@ -4,17 +4,19 @@ import {
   Body,
   HttpException,
   HttpStatus,
-  BadRequestException,
-  UseGuards,
+  UnauthorizedException,
 } from '@nestjs/common';
-import { AuthGuard } from '@nestjs/passport';
-import { RegisterNewUser } from 'src/dto/registerNewUser.dto';
 import { LoginUser } from 'src/dto/loginUser.dto';
+import { RegisterNewUser } from 'src/dto/registerNewUser.dto';
 import { UsersService } from 'src/services/users.service';
+import { AuthService } from 'src/services/auth/auth.service';
 
 @Controller('api/users')
 export class UsersController {
-  constructor(private usersService: UsersService) {}
+  constructor(
+    private usersService: UsersService,
+    private authService: AuthService,
+  ) {}
 
   @Post('/register-user')
   async registerUser(@Body() registerNewUser: RegisterNewUser) {
@@ -39,30 +41,14 @@ export class UsersController {
     return 'User created';
   }
 
-  @UseGuards(AuthGuard('local'))
   @Post('/login-user')
   async loginUser(@Body() loginUser: LoginUser) {
-    const { email, password } = loginUser
+    const verifyLogin = await this.authService.validateUser(
+      loginUser.email,
+      loginUser.password,
+    );
 
-    // if (!email) {
-    //   throw new BadRequestException('Email cannot be empty')
-    // }
-
-    // if (!password) {
-    //   throw new BadRequestException('Password cannot be empty')
-    // }
-
-    // await this.usersService
-    //   .findUser({
-    //     email: email,
-    //   })
-    //   .catch(error => {
-    //     throw new HttpException(error, HttpStatus.BAD_REQUEST)
-    //   })
-
-    return {
-      email: email,
-      message: "Found user"
-    }
+    if (verifyLogin) return await this.authService.generateJWT(loginUser);
+    else throw new UnauthorizedException();
   }
 }
