@@ -1,4 +1,4 @@
-import { NestFactory } from '@nestjs/core'
+import { NestFactory } from '@nestjs/core';
 import { AppModule } from '../src/app.module';
 import { SeedsService } from '@services/seeds.service';
 

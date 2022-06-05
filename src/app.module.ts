@@ -13,7 +13,8 @@ import { SeedsService } from '@services/seeds.service';
 
 const imports = [
   ConfigModule.forRoot({
-    envFilePath: [`../.env.${process.env.NODE_ENV}`, '../.env'],
+    isGlobal: true,
+    envFilePath: [`.env.${process.env.NODE_ENV}`, '.env'],
   }),
   TypeOrmModule.forRoot(ormconfig),
   SeedsModule,
