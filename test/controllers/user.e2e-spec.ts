@@ -1,7 +1,11 @@
 import * as request from 'supertest';
 import { getManager } from 'typeorm';
 import { INestApplication } from '@nestjs/common';
-import { clearDB, createNestAppInstanceWithENVMock } from '../test.helper';
+import {
+  clearDB,
+  createUser,
+  createNestAppInstanceWithENVMock,
+} from '../test.helper';
 import { Users } from 'src/entities/user.entity';
 
 describe('Users Controller', () => {
@@ -58,7 +62,7 @@ describe('Users Controller', () => {
     });
 
     it('should return a 400 error when email is already taken', async () => {
-      const firstSend = await request(app.getHttpServer())
+      await request(app.getHttpServer())
         .post('/api/users/register-user')
         .send(userData);
 
@@ -70,6 +74,46 @@ describe('Users Controller', () => {
       expect(response.body.message).toStrictEqual(
         'Email is already in use, please try another email',
       );
+    });
+  });
+
+  describe('POST /api/users/login-user', () => {
+    it('should return an error if fields are empty', async () => {
+      const response = await request(app.getHttpServer())
+        .post('/api/users/login-user')
+        .send({});
+
+      expect(response.statusCode).toBe(400);
+      expect(response.body.message.message).toStrictEqual([
+        'email must be an email',
+        'password must be a string',
+      ]);
+    });
+
+    it('should return an error if the email does not exist', async () => {
+      const response = await request(app.getHttpServer())
+        .post('/api/users/login-user')
+        .send({
+          email: 'fakeEmail@email.io',
+          password: 'password',
+        });
+
+      expect(response.body.message.message).toStrictEqual(
+        'fakeEmail@email.io does not exist',
+      );
+    });
+
+    it('should verify the user and return a JWT token', async () => {
+      await createUser(app, { email: 'testaccount@email.io' });
+
+      const response = await request(app.getHttpServer())
+        .post('/api/users/login-user')
+        .send({
+          email: 'testaccount@email.io',
+          password: 'password',
+        });
+
+      expect(response.status).toBe(201);
     });
   });
 

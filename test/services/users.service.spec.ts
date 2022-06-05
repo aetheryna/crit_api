@@ -3,6 +3,7 @@ import { getManager, TypeORMError } from 'typeorm';
 import { clearDB, createNestAppInstance } from '../test.helper';
 import { UsersService } from 'src/services/users.service';
 import { Users } from 'src/entities/user.entity';
+// eslint-disable-next-line @typescript-eslint/no-var-requires
 const bcrypt = require('bcrypt');
 
 describe('Users Service', () => {
