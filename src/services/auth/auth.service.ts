@@ -1,8 +1,7 @@
 import { Dependencies, Injectable, BadRequestException } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { UsersService } from '@services/users.service';
-// eslint-disable-next-line @typescript-eslint/no-var-requires
-const bcrypt = require('bcrypt');
+import { compare } from 'bcrypt';
 
 @Dependencies(UsersService, JwtService)
 @Injectable()
@@ -22,7 +21,7 @@ export class AuthService {
         });
       });
 
-    const verify = await bcrypt.compare(password, foundUser.password);
+    const verify = await compare(password, foundUser.password);
 
     if (verify) return foundUser;
 
