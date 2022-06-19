@@ -1,11 +1,9 @@
 import { BadRequestException, INestApplication } from '@nestjs/common';
 import { clearDB, createUser, createNestAppInstance } from '../test.helper';
 import { AuthService } from '@services/auth/auth.service';
-import { JwtService } from '@nestjs/jwt';
 
 let nestApp: INestApplication;
 let service: AuthService;
-let jwtService: JwtService;
 
 beforeEach(async () => {
   await clearDB();
