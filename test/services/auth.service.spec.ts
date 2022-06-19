@@ -1,9 +1,11 @@
 import { BadRequestException, INestApplication } from '@nestjs/common';
 import { clearDB, createUser, createNestAppInstance } from '../test.helper';
 import { AuthService } from '@services/auth/auth.service';
+import { JwtService } from '@nestjs/jwt';
 
 let nestApp: INestApplication;
 let service: AuthService;
+let jwtService: JwtService;
 
 beforeEach(async () => {
   await clearDB();
@@ -40,18 +42,12 @@ describe('Authenticate', () => {
   });
 
   it('should generate a JWT token', async () => {
-    const result = {
-      access_token: '1234',
-    };
+    const generateJWT = await service.generateJWT({
+      user_id: '1234',
+      email: 'testemail@crit.io',
+    });
 
-    jest.spyOn(service, 'generateJWT').mockImplementation(async () => result);
-
-    expect(
-      await service.generateJWT({
-        user_id: '1234',
-        email: 'testemail@crit.io',
-      }),
-    ).toBe(result);
+    expect(typeof generateJWT.access_token).toBe('string');
   });
 });
 

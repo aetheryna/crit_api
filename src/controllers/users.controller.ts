@@ -48,7 +48,10 @@ export class UsersController {
       loginUser.password,
     );
 
-    if (verifyLogin) return await this.authService.generateJWT(loginUser);
-    else throw new UnauthorizedException();
+    if (verifyLogin) {
+      return await this.authService.generateJWT(loginUser);
+    } else {
+      throw new UnauthorizedException();
+    }
   }
 }

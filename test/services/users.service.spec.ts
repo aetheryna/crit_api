@@ -3,8 +3,7 @@ import { getManager, TypeORMError } from 'typeorm';
 import { clearDB, createNestAppInstance } from '../test.helper';
 import { UsersService } from 'src/services/users.service';
 import { Users } from 'src/entities/user.entity';
-// eslint-disable-next-line @typescript-eslint/no-var-requires
-const bcrypt = require('bcrypt');
+import { genSalt, hash } from 'bcrypt';
 
 describe('Users Service', () => {
   let nestApp: INestApplication;
@@ -30,8 +29,8 @@ describe('Users Service', () => {
   describe('Create', () => {
     it('should encrypt the password', async () => {
       const password = 'password';
-      const salt = await bcrypt.genSalt(5);
-      const encryptedPassword = await bcrypt.hash(password, salt);
+      const salt = await genSalt(5);
+      const encryptedPassword = await hash(password, salt);
 
       expect(encryptedPassword).toBeTruthy();
     });
