@@ -6,6 +6,7 @@ import { Users } from 'src/entities/user.entity';
 import { HttpExceptionFilter } from 'src/http-exception-filter';
 import { createMock, DeepMocked } from '@golevelup/ts-jest';
 import { ConfigService } from '@nestjs/config';
+import { hash, genSalt } from 'bcrypt';
 
 export async function createNestAppInstance(): Promise<INestApplication> {
   let app: INestApplication;
@@ -15,6 +16,7 @@ export async function createNestAppInstance(): Promise<INestApplication> {
     providers: [],
   }).compile();
 
+  // eslint-disable-next-line prefer-const
   app = moduleRef.createNestApplication();
   app.useGlobalFilters(new HttpExceptionFilter());
   app.useGlobalPipes(new ValidationPipe());
@@ -40,6 +42,7 @@ export async function createNestAppInstanceWithENVMock(): Promise<{
     ],
   }).compile();
 
+  // eslint-disable-next-line prefer-const
   app = moduleRef.createNestApplication();
   app.useGlobalFilters(new HttpExceptionFilter());
   app.useGlobalPipes(new ValidationPipe());
@@ -59,18 +62,22 @@ export async function clearDB() {
   }
 }
 
-export async function createUser({
-  username,
-  email,
-  firstname,
-  lastname,
-}: any) {
+export async function createUser(
+  nestApp,
+  { username, email, firstname, lastname, password }: any,
+) {
   let userRepository: Repository<Users>;
+
+  const salt = await genSalt(5);
+  const encryptedPassword = await hash('password' || password, salt);
+
+  // eslint-disable-next-line prefer-const
+  userRepository = nestApp.get('UsersRepository');
 
   const user = await userRepository.save(
     userRepository.create({
       userName: username || 'TestAccount',
-      password: 'password',
+      password: encryptedPassword,
       firstName: firstname || 'Test',
       lastName: lastname || 'Account',
       email: email || 'dev@crit.io',
