@@ -6,8 +6,7 @@ import { Users } from 'src/entities/user.entity';
 import { HttpExceptionFilter } from 'src/http-exception-filter';
 import { createMock, DeepMocked } from '@golevelup/ts-jest';
 import { ConfigService } from '@nestjs/config';
-// eslint-disable-next-line @typescript-eslint/no-var-requires
-const bcrypt = require('bcrypt');
+import { hash, genSalt } from 'bcrypt';
 
 export async function createNestAppInstance(): Promise<INestApplication> {
   let app: INestApplication;
@@ -69,8 +68,8 @@ export async function createUser(
 ) {
   let userRepository: Repository<Users>;
 
-  const salt = await bcrypt.genSalt(5);
-  const encryptedPassword = await bcrypt.hash('password' || password, salt);
+  const salt = await genSalt(5);
+  const encryptedPassword = await hash('password' || password, salt);
 
   // eslint-disable-next-line prefer-const
   userRepository = nestApp.get('UsersRepository');
