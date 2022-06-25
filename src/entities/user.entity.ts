@@ -7,7 +7,7 @@ import {
   UpdateDateColumn,
 } from 'typeorm';
 
-@Entity()
+@Entity('users')
 export class Users {
   @PrimaryGeneratedColumn('uuid')
   user_id: string;
@@ -18,6 +18,7 @@ export class Users {
   @Column()
   lastName: string;
 
+  @Index('UQ_username', { unique: true })
   @Column()
   userName: string;
 
@@ -27,6 +28,12 @@ export class Users {
 
   @Column()
   password: string;
+
+  @Column({ default: 'user' })
+  role: string;
+
+  @Column()
+  refreshToken: string;
 
   @CreateDateColumn({ default: () => 'now()', name: 'created_at' })
   createdAt: Date;

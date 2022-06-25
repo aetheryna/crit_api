@@ -2,10 +2,14 @@ import {
   Controller,
   Post,
   Body,
+  Req,
   HttpException,
   HttpStatus,
   UnauthorizedException,
+  UseGuards,
 } from '@nestjs/common';
+import { Request } from 'express';
+import { JwtAuthGuard } from '../services/auth/jwtAuth.guard';
 import { LoginUser } from 'src/dto/loginUser.dto';
 import { RegisterNewUser } from 'src/dto/registerNewUser.dto';
 import { UsersService } from 'src/services/users.service';
@@ -43,15 +47,21 @@ export class UsersController {
 
   @Post('/login-user')
   async loginUser(@Body() loginUser: LoginUser) {
-    const verifyLogin = await this.authService.validateUser(
+    const verifyLoginAndReturnUser = await this.authService.validateUser(
       loginUser.email,
       loginUser.password,
     );
 
-    if (verifyLogin) {
-      return await this.authService.generateJWT(loginUser);
+    if (verifyLoginAndReturnUser) {
+      return await this.authService.generateJWT(verifyLoginAndReturnUser);
     } else {
       throw new UnauthorizedException();
     }
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Post('/get-user-details')
+  async getUserDetails(@Req() request: Request) {
+    return await this.usersService.findUser(request.body);
   }
 }
