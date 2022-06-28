@@ -1,4 +1,9 @@
-import { Dependencies, Injectable, BadRequestException } from '@nestjs/common';
+import {
+  Dependencies,
+  Injectable,
+  BadRequestException,
+  ForbiddenException,
+} from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { ConfigService } from '@nestjs/config';
 import { UsersService } from '@services/users.service';
@@ -40,7 +45,7 @@ export class AuthService {
         },
         {
           secret: this.configService.get('ACCESS_TOKEN_SECRET'),
-          expiresIn: this.configService.get('ACCESS_TOKEN_EXPIRE') || 60 * 15,
+          expiresIn: this.configService.get('ACCESS_TOKEN_EXPIRE'),
         },
       ),
       this.jwtService.signAsync(
@@ -51,8 +56,7 @@ export class AuthService {
         },
         {
           secret: this.configService.get('REFRESH_TOKEN_SECRET'),
-          expiresIn:
-            this.configService.get('REFRESH_TOKEN_EXPIRE') || 60 * 60 * 24 * 7,
+          expiresIn: this.configService.get('REFRESH_TOKEN_EXPIRE'),
         },
       ),
     ]);
@@ -63,7 +67,34 @@ export class AuthService {
     };
   }
 
-  async generateJWT(user: any) {
-    return this.signTokens(user.user_id, user.email, 'user');
+  async assignAuthTokens(user: any) {
+    const signedTokens = await this.signTokens(
+      user.user_id,
+      user.email,
+      user.role,
+    );
+
+    await this.usersService.findAndUpdateUserRefreshToken(
+      user.user_id,
+      signedTokens.refresh_token,
+    );
+
+    return signedTokens;
+  }
+
+  async logoutUser(userId: string) {
+    await this.usersService.findAndUpdateUserRefreshToken(userId, '');
+
+    return 'User logged out';
+  }
+
+  async refreshTokens(email: string, refreshToken: string) {
+    const foundUser: any = await this.usersService.findUser({ email });
+
+    if (!foundUser) throw new ForbiddenException();
+
+    if (foundUser.refreshToken !== refreshToken) throw new ForbiddenException();
+
+    return await this.assignAuthTokens(foundUser);
   }
 }
