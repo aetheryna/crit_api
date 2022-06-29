@@ -39,6 +39,12 @@ export class UsersController {
         email: email,
       })
       .catch((error) => {
+        if (error.code === '23505' && error.constraint === 'UQ_username')
+          throw new HttpException(
+            'Username is already in use, please try another username',
+            HttpStatus.BAD_REQUEST,
+          );
+
         if (error.code === '23505' && error.constraint === 'UQ_user_email')
           throw new HttpException(
             'Email is already in use, please try another email',

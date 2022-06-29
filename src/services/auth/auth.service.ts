@@ -89,11 +89,14 @@ export class AuthService {
   }
 
   async refreshTokens(email: string, refreshToken: string) {
-    const foundUser: any = await this.usersService.findUser({ email });
+    const foundUser: any = await this.usersService
+      .findUser({ email })
+      .catch(() => {
+        throw new ForbiddenException('Access denied');
+      });
 
-    if (!foundUser) throw new ForbiddenException();
-
-    if (foundUser.refreshToken !== refreshToken) throw new ForbiddenException();
+    if (foundUser.refreshToken !== refreshToken)
+      throw new ForbiddenException('Access denied');
 
     return await this.assignAuthTokens(foundUser);
   }
