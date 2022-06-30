@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
 import { EntityManager, Repository } from 'typeorm';
 import { Users } from '../entities/user.entity';
 import { genSalt, hash } from 'bcrypt';
@@ -14,6 +14,7 @@ export class UsersService {
 
   async registerUser(userParams: any): Promise<void> {
     const { userName, password, email, firstName, lastName } = userParams;
+
     const salt = await genSalt(5);
     const encryptedPassword = await hash(password, salt);
 
