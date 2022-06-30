@@ -1,6 +1,7 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ConfigModule } from '@nestjs/config';
+import { APP_GUARD } from '@nestjs/core';
 import { Connection } from 'typeorm';
 
 import ormconfig from '../ormconfig';
@@ -10,6 +11,7 @@ import { AuthModule } from './modules/auth/auth.module';
 import { UsersModule } from './modules/users/users.module';
 
 import { SeedsService } from '@services/seeds.service';
+import { AccessTokenGuard } from './common/guards/accessToken.guard';
 
 const imports = [
   ConfigModule.forRoot({
@@ -25,7 +27,13 @@ const imports = [
 @Module({
   imports,
   controllers: [],
-  providers: [SeedsService],
+  providers: [
+    {
+      provide: APP_GUARD,
+      useClass: AccessTokenGuard,
+    },
+    SeedsService,
+  ],
 })
 export class AppModule {
   constructor(private connection: Connection) {}

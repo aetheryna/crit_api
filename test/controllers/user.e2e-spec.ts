@@ -14,9 +14,9 @@ describe('Users Controller', () => {
 
   const userData = {
     username: 'TestUser',
+    email: 'testuser@crit.io',
     firstname: 'Test',
     lastname: 'User',
-    email: 'testuser@crit.io',
     password: 'password',
   };
 
@@ -61,14 +61,31 @@ describe('Users Controller', () => {
       ]);
     });
 
-    it('should return a 400 error when email is already taken', async () => {
-      await request(app.getHttpServer())
-        .post('/api/users/register-user')
-        .send(userData);
+    it('should return a 400 error when username is already taken', async () => {
+      await createUser(app, userData);
 
       const response = await request(app.getHttpServer())
         .post('/api/users/register-user')
         .send(userData);
+
+      expect(response.statusCode).toBe(400);
+      expect(response.body.message).toStrictEqual(
+        'Username is already in use, please try another username',
+      );
+    });
+
+    it('should return a 400 error when email is already taken', async () => {
+      await createUser(app, userData);
+
+      const response = await request(app.getHttpServer())
+        .post('/api/users/register-user')
+        .send({
+          username: 'newTestUser',
+          email: 'testuser@crit.io',
+          firstname: 'Test',
+          lastname: 'User',
+          password: 'password',
+        });
 
       expect(response.statusCode).toBe(400);
       expect(response.body.message).toStrictEqual(
@@ -103,7 +120,7 @@ describe('Users Controller', () => {
       );
     });
 
-    it('should verify the user and return a JWT token', async () => {
+    it('should verify the user and return an access and refresh token', async () => {
       await createUser(app, { email: 'testaccount@email.io' });
 
       const response = await request(app.getHttpServer())
@@ -115,6 +132,7 @@ describe('Users Controller', () => {
 
       expect(response.status).toBe(201);
       expect(response.body).toBeTruthy();
+      expect(typeof response.body).toBe('object');
     });
   });
 

@@ -81,6 +81,8 @@ export async function createUser(
       firstName: firstname || 'Test',
       lastName: lastname || 'Account',
       email: email || 'dev@crit.io',
+      role: 'user',
+      refreshToken: '',
       createdAt: new Date(),
       updatedAt: new Date(),
     }),
